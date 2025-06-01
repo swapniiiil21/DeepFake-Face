@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepScan AI | Advanced Deepfake Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --gray: #636e72;
+            --success: #00b894;
+            --danger: #d63031;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--light);
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* 3D Scroll Effect */
+        .scroll-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+
+        section {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            scroll-snap-align: start;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #130f40 0%, #000 100%);
+            transform: translateZ(-50px) scale(2);
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100vh) translateX(20px); }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 20px;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateZ(0); }
+            50% { transform: translateY(-20px) translateZ(10px); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--dark);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* Detection Section */
+        .detection {
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detection-container {
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transition: transform 0.5s, box-shadow 0.5s;
+        }
+
+        .detection-container:hover {
+            transform: translateY(-10px) translateZ(20px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .upload-area p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            display: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+        }
+
+        .image-preview img {
+            width: 100%;
+            display: block;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box {
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .real {
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        .fake {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .confidence-meter {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .confidence-level {
+            height: 100%;
+            background: linear-gradient(to right, var(--danger), var(--success));
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .confidence-value {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background: #000;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 0 20px;
+            margin-bottom: 40px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            transform: translateZ(30px);
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: linear-gradient(135deg, #130f40 0%, #000 100%);
+        }
+
+        .testimonials-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 30px;
+            padding: 30px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .testimonial-card {
+            min-width: 350px;
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            scroll-snap-align: start;
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px) translateZ(20px);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: #000;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-5px) translateZ(10px);
+        }
+
+        .faq-question {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 20px 20px;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            padding: 80px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .footer-links h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step {
+                margin-bottom: 40px;
+                max-width: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 20px;
+                backdrop-filter: blur(10px);
+                transform: translateY(-100%);
+                transition: transform 0.3s;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            nav.active {
+                transform: translateY(0);
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 15px 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .detection-container {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 30px 20px;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Main Scroll Container -->
+    <div class="scroll-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-eye"></i>
+                DeepScan AI
+            </div>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#detection">Detection</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">Technology</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Advanced Deepfake Detection</h1>
+                <p>Uncover AI-generated images with our state-of-the-art detection technology. Fast, accurate, and completely free to use.</p>
+                <div class="btn-group">
+                    <a href="#detection" class="btn">Try Now</a>
+                    <a href="#how-it-works" class="btn btn-outline">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detection Section -->
+        <section id="detection" class="detection">
+            <div class="container">
+                <div class="detection-container">
+                    <h2 class="section-title">Deepfake Detector</h2>
+                    <p class="section-subtitle">Upload an image to analyze its authenticity using our AI technology</p>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Upload Image</h3>
+                        <p>Drag & drop your image here</p>
+                        <small>Supports JPG, PNG (Max 5MB)</small>
+                        <input type="file" id="fileInput" accept="image/*">
+                    </div>
+                    
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImage" src="#" alt="Preview">
+                    </div>
+                    
+                    <button class="btn" id="analyzeBtn" style="display: none; width: 100%;">
+                        Analyze Image
+                    </button>
+                    
+                    <div class="result-container" id="resultContainer">
+                        <div class="result-box" id="resultBox">
+                            Result will appear here
+                        </div>
+                        <div class="confidence-meter">
+                            <div class="confidence-level" id="confidenceLevel"></div>
+                        </div>
+                        <div class="confidence-value" id="confidenceValue">Confidence: 0%</div>
+                        <p id="resultExplanation">Our analysis will determine if the image is likely authentic or AI-generated.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose DeepScan</h2>
+                <p class="section-subtitle">Cutting-edge technology designed for accuracy and ease of use</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="feature-title">Advanced AI</h3>
+                        <p>Utilizes deep neural networks trained on millions of real and synthetic images for unparalleled accuracy.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Privacy First</h3>
+                        <p>Your images are processed securely and never stored permanently on our servers.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Lightning Fast</h3>
+                        <p>Get results in seconds with our optimized detection algorithms running on powerful GPUs.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">Detailed Insights</h3>
+                        <p>Receive comprehensive reports with confidence scores and detection explanations.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="feature-title">Open Source</h3>
+                        <p>Completely transparent and open-source technology available for everyone.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="feature-title">Educational</h3>
+                        <p>Learn about deepfake technology and how to spot synthetic media.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">Our Technology</h2>
+                <p class="section-subtitle">Understanding how our deepfake detection system works</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Image Analysis</h3>
+                        <p>Our AI examines subtle patterns in the image that are often missed by the human eye.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Feature Extraction</h3>
+                        <p>The system identifies key facial features and artifacts that indicate manipulation.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Pattern Recognition</h3>
+                        <p>Machine learning models compare the image against known deepfake characteristics.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Result Calculation</h3>
+                        <p>The system calculates a probability score and provides its assessment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials">
+            <div class="container">
+                <h2 class="section-title">Trusted Worldwide</h2>
+                <p class="section-subtitle">Used by journalists, researchers, and organizations to combat misinformation</p>
+                
+                <div class="testimonials-container">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"As an investigative journalist, verifying images is crucial. DeepScan has helped me identify several deepfakes that were circulating as real news."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">SJ</div>
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <p>Investigative Journalist</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"I use DeepScan in my digital literacy workshops to show people how advanced deepfakes have become and how we can detect them."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">MC</div>
+                            <div class="author-info">
+                                <h4>Michael Chen</h4>
+                                <p>Digital Literacy Educator</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"The detailed confidence score helps me understand how certain the detection is, which is crucial for my research on media authenticity."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">ER</div>
+                            <div class="author-info">
+                                <h4>Dr. Emma Rodriguez</h4>
+                                <p>Media Researcher</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"I was skeptical at first, but after testing it with known deepfakes, I'm impressed by its accuracy. A valuable tool for everyone."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">DK</div>
+                            <div class="author-info">
+                                <h4>David Kim</h4>
+                                <p>Tech Enthusiast</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="faq">
+            <div class="container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Find answers to common questions about deepfake detection</p>
+                
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How accurate is your deepfake detector?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our detector achieves approximately 92-95% accuracy on benchmark datasets. However, no detector is perfect, especially as deepfake technology improves. We recommend using our tool as one of several verification methods.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Do you store the images I upload?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No, we do not store your images permanently. Images are processed temporarily for analysis and then deleted. For maximum privacy, we're working on a client-side version that processes images entirely in your browser.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What types of deepfakes can you detect?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our detector is trained to identify various types of AI-generated faces, including those created by GANs (Generative Adversarial Networks) and diffusion models. It works best on face swaps and fully synthetic faces.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I use this detector for videos?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Currently, we only support single image analysis. For videos, we recommend extracting frames and analyzing them individually. Video analysis is planned for a future release.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is this technology really free?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, completely free and open-source. We believe fighting misinformation should be accessible to everyone. You can find our code on GitHub and even contribute to the project.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <h2>Ready to Detect Deepfakes?</h2>
+                <p>Join thousands of users who are identifying AI-generated content with our free tool.</p>
+                <a href="#detection" class="btn">Try Now For Free</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-about">
+                        <
