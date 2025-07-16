@@ -3,683 +3,649 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Deepfake Detector - AI-Powered Analysis</title>
+    <title>DeepGuard Pro | Advanced Deepfake Detection</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Base Palette - Sophisticated Dark Theme */
-            --bg-color-dark: #0D1117; /* Very dark blue/charcoal - like GitHub dark */
-            --bg-color-medium: #161B22; /* Slightly lighter for layered elements */
-            --bg-color-light: #21262D;  /* For cards or interactive surfaces */
-
-            /* Accent Palette - Vibrant & Techy */
-            --accent-primary: #58A6FF; /* Bright Blue - good for CTAs */
-            --accent-secondary: #A371F7; /* Purple - for highlights or secondary actions */
-            --accent-tertiary: #2EA043; /* Green - for success states (like 'Real' result) */
-            --accent-danger: #F85149;   /* Red - for warning states (like 'Fake' result) */
-
-            /* Text Palette */
-            --text-primary: #C9D1D9;    /* Light gray for primary body text */
-            --text-secondary: #8B949E;  /* Medium gray for secondary/less important text */
-            --text-headings: #F0F6FC;   /* Brighter white/light gray for headings */
-            --text-on-accent: #FFFFFF;  /* White text on accent-colored buttons */
-
-            /* Border & Shadow */
-            --border-color: rgba(139, 148, 158, 0.3); /* Subtle border color */
-            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); /* Softer, deeper shadow for dark theme */
-            --glow-effect: 0 0 15px rgba(var(--accent-primary-rgb), 0.3); /* For interactive elements */
-
+            /* Color Palette */
+            --bg-dark: #0a0a0a;
+            --bg-darker: #050505;
+            --bg-card: rgba(20, 20, 20, 0.8);
+            --accent-primary: #0071e3;
+            --accent-primary-light: rgba(0, 113, 227, 0.15);
+            --accent-success: #30d158;
+            --accent-danger: #ff453a;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --border-color: rgba(255, 255, 255, 0.08);
+            
             /* UI Elements */
-            --border-radius: 10px; /* Slightly more rounded for a modern feel */
-            --transition-speed: 0.4s;
-            --transition-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
-
-            /* RGB versions for rgba() glow effects if needed */
-            --accent-primary-rgb: 88, 166, 255;
-            --accent-secondary-rgb: 163, 113, 247;
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            --glow-effect: 0 0 20px rgba(0, 113, 227, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; /* Apple-like font stack */
-        }
-
-        html {
-            scroll-behavior: smooth;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color-dark);
+            background-color: var(--bg-dark);
             color: var(--text-primary);
-            line-height: 1.65;
+            min-height: 100vh;
             overflow-x: hidden;
-            position: relative; /* For pseudo-elements */
+            line-height: 1.6;
         }
 
-        /* Advanced Animated Gradient Background - More subtle and deep */
+        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2; /* Behind content and other potential layers */
-            background: linear-gradient(
-                -45deg,
-                #0d1117, /* Deep base */
-                #010409, /* Even deeper */
-                #1c2a40, /* Muted blue */
-                #2a1c40  /* Muted purple */
-            );
-            background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
-            filter: blur(5px); /* Subtle blur */
-            opacity: 0.8; /* Slightly reduced opacity */
-        }
-
-        /* Optional: Subtle pattern overlay for texture (like Stripe's subtle backgrounds) */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
-            background-size: 20px 20px; /* Adjust for dot density */
-            opacity: 0.5;
-        }
-
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--accent-primary);
-            font-weight: 500;
-            transition: color var(--transition-speed) var(--transition-easing);
-        }
-        a:hover {
-            color: var(--text-headings); /* Brighter on hover */
-            filter: brightness(1.1);
-        }
-
-        ul { list-style: none; }
-
-        .container {
-            max-width: 1100px; /* Slightly narrower for more focused content */
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background: var(--accent-primary);
-            color: var(--text-on-accent);
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            transition: all var(--transition-speed) var(--transition-easing);
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), var(--glow-effect);
-            text-transform: none;
-            letter-spacing: 0.5px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 7px 18px rgba(0, 0, 0, 0.4), 0 0 25px rgba(var(--accent-primary-rgb), 0.5);
-            filter: brightness(1.1);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent-primary);
-            color: var(--accent-primary);
-            box-shadow: none;
-        }
-
-        .btn-outline:hover {
-            background: var(--accent-primary);
-            color: var(--text-on-accent);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), var(--glow-effect);
-        }
-
-        section {
-            padding: 90px 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.6rem; /* Slightly reduced for balance */
-            color: var(--text-headings);
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 50px;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        /* Header Styles */
-        header {
-            background-color: rgba(13, 17, 23, 0.85); /* Dark, slightly transparent */
-            backdrop-filter: blur(12px); /* More pronounced blur */
-            box-shadow: 0 1px 0 rgba(139, 148, 158, 0.1); /* Subtle bottom line */
-            position: fixed;
-            width: 100%;
             top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(0, 113, 227, 0.1) 0%, rgba(0, 0, 0, 1) 70%);
+            z-index: -2;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
             z-index: 1000;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 0; /* Adjusted padding */
         }
 
         .logo {
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: var(--text-headings);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
-        }
-        .logo i {
-            margin-right: 10px;
-            color: var(--accent-primary);
+            gap: 10px;
         }
 
-        nav ul { display: flex; }
-        nav ul li { margin-left: 30px; }
-        nav ul li a {
-            font-weight: 500;
-            font-size: 0.95rem; /* Slightly smaller for a sleeker look */
-            color: var(--text-secondary);
-            padding: 8px 10px;
-            border-radius: 6px;
-            transition: color 0.3s ease, background-color 0.3s ease;
+        .logo-icon {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
         }
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none;
+            position: relative;
+        }
+
         nav ul li a:hover,
-        nav ul li a.active-link {
-            color: var(--text-headings);
-            background-color: rgba(var(--accent-primary-rgb), 0.1);
+        nav ul li a.active {
+            color: var(--text-primary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover::after,
+        nav ul li a.active::after {
+            width: 100%;
         }
 
         .mobile-menu-btn {
             display: none;
-            font-size: 1.7rem;
+            font-size: 1.5rem;
+            color: var(--text-primary);
             cursor: pointer;
-            color: var(--text-headings);
         }
 
         /* Hero Section */
         .hero {
-            min-height: 90vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding-top: 120px;
-            padding-bottom: 60px;
-            background: transparent; /* Rely on body pseudo-elements */
+            padding-top: 100px;
             position: relative;
-            overflow: visible; /* Allow for potential overflow effects */
-        }
-        /* Optional: Add a subtle radial gradient behind hero content for focus */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80%;
-            height: 80%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(ellipse at center, rgba(var(--accent-primary-rgb), 0.08) 0%, transparent 60%);
-            z-index: 0;
-            pointer-events: none;
         }
 
-        .hero-content { z-index: 1; }
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
         .hero h1 {
-            font-size: 3.8rem; /* Larger for impact */
+            font-size: 4rem;
+            font-weight: 700;
             margin-bottom: 20px;
-            color: var(--text-headings);
-            font-weight: 800; /* Bolder */
+            background: linear-gradient(to right, #f5f5f7, #a1a1a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             line-height: 1.1;
-            letter-spacing: -1px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 650px;
-            margin: 0 auto 40px;
-            color: var(--text-secondary);
-        }
-        .hero-buttons { display: flex; justify-content: center; gap: 20px; }
 
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 100px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(to right, #f5f5f7, #a1a1a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
 
         /* Detection Section */
-        #detection { background-color: transparent; }
         .detection-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: rgba(var(--bg-color-light-rgb, 33, 38, 45), 0.85); /* Use RGB for opacity */
-            backdrop-filter: blur(10px);
+            background-color: var(--bg-card);
+            backdrop-filter: blur(20px);
             border-radius: var(--border-radius);
-            padding: 40px;
+            padding: 50px;
             box-shadow: var(--card-shadow);
-            max-width: 750px;
-            margin: 0 auto;
             border: 1px solid var(--border-color);
-        }
-        :root { /* Add RGB for bg-color-light if not already defined */
-            --bg-color-light-rgb: 33, 38, 45;
+            max-width: 900px;
+            margin: 0 auto;
+            transition: var(--transition);
         }
 
+        .detection-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
 
         .upload-area {
-            width: 100%;
             border: 2px dashed var(--border-color);
             border-radius: var(--border-radius);
-            padding: 45px;
+            padding: 60px 20px;
             text-align: center;
-            margin-bottom: 30px;
             cursor: pointer;
-            transition: all 0.3s var(--transition-easing);
+            transition: var(--transition);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-primary);
+            background-color: var(--accent-primary-light);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-text {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .upload-subtext {
+            font-size: 0.95rem;
             color: var(--text-secondary);
         }
-        .upload-area:hover, .upload-area.active-drag {
-            border-color: var(--accent-primary);
-            background-color: rgba(var(--accent-primary-rgb), 0.05);
-            transform: scale(1.02);
+
+        #fileInput {
+            display: none;
         }
-        .upload-area i {
-            font-size: 3rem;
-            color: var(--accent-primary);
-            margin-bottom: 15px;
+
+        /* Image Preview */
+        .image-preview-container {
+            display: none;
+            justify-content: center;
+            margin-bottom: 40px;
         }
-        .upload-area p { margin-bottom: 10px; font-size: 1.05rem; color: var(--text-primary); }
-        .upload-area small { color: var(--text-secondary); font-size: 0.9rem; }
-        #fileInput { display: none; }
 
         .image-preview {
+            max-width: 500px;
             width: 100%;
-            max-width: 400px;
-            margin: 0 auto 30px;
-            display: none;
             border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
             border: 1px solid var(--border-color);
         }
+
+        .image-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        }
+
         .image-preview img {
             width: 100%;
             display: block;
         }
-        #analyzeBtn { display: none; margin-bottom: 25px;}
 
-        .result-container {
-            text-align: center;
-            margin-top: 30px;
-            width: 100%;
-            display: none;
-        }
-        .result-box {
-            padding: 18px;
+        /* Analysis Button */
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background-color: var(--accent-primary);
+            color: white;
             border-radius: var(--border-radius);
-            font-size: 1.15rem;
             font-weight: 600;
-            margin-bottom: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            color: var(--text-on-accent);
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--glow-effect);
         }
-        .result-box.real { background-color: var(--accent-tertiary); }
-        .result-box.fake { background-color: var(--accent-danger); }
 
-        .confidence-meter {
-            width: 100%; height: 12px; /* Slimmer */
-            background-color: var(--bg-color-medium);
-            border-radius: 12px; margin: 20px 0; overflow: hidden;
-            border: 1px solid var(--border-color);
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 113, 227, 0.5);
         }
-        .confidence-level {
-            height: 100%;
-            width: 0%; /* Set by JS */
-            transition: width 0.8s var(--transition-easing), background-color 0.3s ease;
-            border-radius: 12px;
+
+        #analyzeBtn {
+            display: none;
+            width: 100%;
+            margin-bottom: 30px;
         }
-        .confidence-value {
+
+        /* Results Section */
+        .result-container {
+            display: none;
+            width: 100%;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-title {
+            font-size: 1.6rem;
             font-weight: 600;
-            color: var(--text-primary);
-            font-size: 1rem;
         }
-        #resultExplanation { color: var(--text-secondary); margin-top: 10px; font-size: 0.9rem; }
 
-        /* Features Section - Glassmorphism Cards */
-        #features { background-color: transparent; }
-        .features-grid {
+        .verdict {
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .verdict.real {
+            background-color: var(--accent-success);
+        }
+
+        .verdict.fake {
+            background-color: var(--accent-danger);
+        }
+
+        /* Analysis Details */
+        .analysis-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
         }
-        .feature-card {
-            background-color: rgba(var(--bg-color-light-rgb), 0.7); /* Glass effect */
-            backdrop-filter: blur(12px);
+
+        .analysis-card {
+            background-color: var(--bg-darker);
             border-radius: var(--border-radius);
             padding: 30px;
-            box-shadow: var(--card-shadow);
-            text-align: left;
-            transition: transform var(--transition-speed) var(--transition-easing), box-shadow var(--transition-speed) var(--transition-easing), background-color var(--transition-speed) var(--transition-easing);
+            transition: var(--transition);
             border: 1px solid var(--border-color);
         }
-        .feature-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(var(--accent-secondary-rgb), 0.3);
-            background-color: rgba(var(--bg-color-light-rgb), 0.85);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--accent-secondary); /* Using secondary accent for features */
-            margin-bottom: 20px;
-            display: inline-block; /* For better layout control */
-        }
-        .feature-title {
-            font-size: 1.35rem;
-            margin-bottom: 12px;
-            color: var(--text-headings);
-        }
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-primary);
         }
 
-        /* How It Works Section */
-        #how-it-works { background-color: var(--bg-color-medium); } /* Solid section bg for contrast */
-        .steps-container {
+        .analysis-title {
             display: flex;
-            justify-content: space-around;
-            margin-top: 50px;
-            flex-wrap: wrap;
-            gap: 25px;
-        }
-        .step {
-            flex-basis: 22%;
-            min-width: 230px;
-            text-align: left;
-            padding: 25px;
-            background-color: var(--bg-color-light);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .step:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.3);
-        }
-        .step-number {
-            width: 45px; height: 45px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: var(--text-on-accent); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; font-weight: bold;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
             margin-bottom: 20px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-        }
-        .step-title {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-            color: var(--text-headings);
-        }
-        .step p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
         }
 
-        /* Testimonials Section */
-        #testimonials { background-color: transparent; }
-        .testimonials-container {
+        .analysis-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
             display: flex;
-            overflow-x: auto;
-            gap: 25px;
-            padding: 20px 5px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-        .testimonial-card {
-            min-width: 330px;
-            background-color: rgba(var(--bg-color-light-rgb), 0.75);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            box-shadow: var(--card-shadow);
-            scroll-snap-align: center;
-            border: 1px solid var(--border-color);
-        }
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-            font-size: 1rem;
-        }
-        .testimonial-author { display: flex; align-items: center; }
-        .author-avatar {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            margin-right: 15px; overflow: hidden;
-            border: 2px solid var(--accent-primary);
-        }
-        .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .author-info h4 {
-            color: var(--text-headings);
-            margin-bottom: 3px;
-            font-size: 1rem;
-        }
-        .author-info p {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
         }
 
-        /* FAQ Section */
-        #faq { background-color: var(--bg-color-medium); } /* Solid section bg */
-        .faq-container { max-width: 800px; margin: 0 auto; }
-        .faq-item {
-            background-color: var(--bg-color-light);
-            border-radius: var(--border-radius);
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-        .faq-question {
-            padding: 18px 20px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; font-weight: 600;
-            color: var(--text-headings);
-            font-size: 1.1rem;
-        }
-        .faq-question i {
-            transition: transform 0.3s var(--transition-easing);
+        .face-icon {
+            background-color: rgba(0, 113, 227, 0.2);
             color: var(--accent-primary);
         }
-        .faq-answer {
-            padding: 0 20px; max-height: 0;
-            overflow: hidden; transition: max-height 0.4s var(--transition-easing), padding 0.4s var(--transition-easing);
+
+        .eye-icon {
+            background-color: rgba(255, 59, 48, 0.2);
+            color: var(--accent-danger);
+        }
+
+        .background-icon {
+            background-color: rgba(48, 209, 88, 0.2);
+            color: var(--accent-success);
+        }
+
+        .analysis-value {
+            font-size: 1rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            margin-bottom: 25px;
             line-height: 1.7;
         }
-        .faq-item.active .faq-question i { transform: rotate(180deg); }
-        .faq-item.active .faq-answer { max-height: 300px; padding-bottom: 20px; }
 
-        /* CTA Section */
-        .cta { background: transparent; text-align: center; }
-        .cta h2 {
-            font-size: 2.4rem;
-            margin-bottom: 20px;
-            color: var(--text-headings);
+        .confidence-meter {
+            height: 8px;
+            background-color: var(--bg-dark);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
         }
-        .cta p {
-            max-width: 650px;
-            margin: 0 auto 40px;
-            font-size: 1.1rem;
+
+        .confidence-level {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .high-confidence {
+            background-color: var(--accent-success);
+        }
+
+        .medium-confidence {
+            background-color: var(--accent-primary);
+        }
+
+        .low-confidence {
+            background-color: var(--accent-danger);
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-top: 120px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-primary);
+        }
+
+        .feature-icon {
+            font-size: 2.8rem;
+            color: var(--accent-primary);
+            margin-bottom: 25px;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .feature-desc {
+            font-size: 1rem;
             color: var(--text-secondary);
+            line-height: 1.7;
         }
 
         /* Footer */
         footer {
-            background-color: var(--bg-color-dark); /* Darkest bg for footer */
-            color: var(--text-secondary);
-            padding: 60px 0 20px;
+            background-color: var(--bg-darker);
+            padding: 80px 0 40px;
+            margin-top: 100px;
             border-top: 1px solid var(--border-color);
         }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 35px; margin-bottom: 40px;
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
         .footer-logo {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            color: var(--text-headings);
-            margin-bottom: 20px;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-         .footer-logo i { margin-right: 8px; color: var(--accent-primary);}
 
-        .footer-about p {
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+        .footer-logo-icon {
+            color: var(--accent-primary);
         }
-        .social-links { display: flex; gap: 15px; }
-        .social-links a {
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            background-color: var(--bg-color-light);
-            display: flex; align-items: center; justify-content: center;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .copyright {
+            margin-top: 40px;
+            text-align: center;
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        .social-links a:hover {
-            background-color: var(--accent-primary);
-            color: var(--text-on-accent);
-            transform: scale(1.1);
-        }
-        .footer-links h3 {
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-            color: var(--text-headings);
-        }
-        .footer-links ul li { margin-bottom: 10px; }
-        .footer-links ul li a {
-            color: var(--text-secondary);
-            transition: color 0.3s ease;
-            font-size: 0.9rem;
-        }
-        .footer-links ul li a:hover { color: var(--accent-primary); }
-        .footer-bottom {
-            text-align: center; padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85rem;
-        }
 
-        /* Scroll Animations - Subtle Fade In Up */
-        .scroll-animate {
-            opacity: 0;
-            transform: translateY(25px);
-            transition: opacity 0.7s var(--transition-easing), transform 0.7s var(--transition-easing);
-        }
-        .scroll-animate.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-
-        /* Responsive Styles */
+        /* Responsive Design */
         @media (max-width: 992px) {
-            .hero h1 { font-size: 3.2rem; }
-            .section-title { font-size: 2.3rem; }
-            .steps-container { justify-content: center; }
-            .step { flex-basis: 45%; min-width: 210px; }
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
-            .header-container { padding: 15px 0; }
             nav {
                 position: fixed;
-                left: 0; width: 100%;
-                background-color: rgba(22, 27, 34, 0.97); /* Darker mobile nav */
-                backdrop-filter: blur(10px);
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-darker);
+                backdrop-filter: blur(20px);
                 padding: 20px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                border-top: 1px solid var(--border-color);
                 transform: translateY(-150%);
-                transition: transform 0.4s ease-in-out;
-                border-bottom: 1px solid var(--border-color);
+                transition: transform 0.4s ease;
             }
-            nav.active { transform: translateY(0); }
-            nav ul { flex-direction: column; align-items: center; }
-            nav ul li { margin: 12px 0; }
-            nav ul li a { font-size: 1.05rem; color: var(--text-primary); }
-            nav ul li a:hover, nav ul li a.active-link {
-                background-color: var(--accent-primary);
-                color: var(--text-on-accent);
+            
+            nav.active {
+                transform: translateY(0);
             }
-            .mobile-menu-btn { display: block; }
-
-            .hero h1 { font-size: 2.6rem; }
-            .hero p { font-size: 1.1rem; }
-            .hero-buttons { flex-direction: column; align-items: center; gap: 15px; }
-            .btn { padding: 12px 22px; width: 75%; max-width: 280px; text-align: center;}
-
-            .section-title { font-size: 2rem; }
-            .detection-container { padding: 25px; }
-            .upload-area { padding: 30px 15px; }
-            .step { flex-basis: 80%; }
-            .features-grid { grid-template-columns: 1fr; }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .detection-container {
+                padding: 30px;
+            }
+            
+            .upload-area {
+                padding: 40px 15px;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 576px) {
-            .hero { padding: 100px 0 60px; min-height: 70vh;}
-            .hero h1 { font-size: 2.1rem; }
-            section { padding: 50px 0; }
-            .section-title { font-size: 1.8rem; }
-            .section-subtitle { font-size: 1rem; }
-            .footer-grid { grid-template-columns: 1fr; text-align:center;}
-            .social-links { justify-content: center;}
-            .footer-logo { display: block; margin-left: auto; margin-right: auto;}
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <header id="pageHeader">
-        <div class="container header-container">
-            <a href="#" class="logo scroll-animate">
-                <i class="fas fa-eye"></i>Deepfake Detector
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-shield-alt logo-icon"></i>DeepGuard Pro
             </a>
             <nav id="mainNav">
                 <ul>
-                    <li><a href="#hero" class="active-link">Home</a></li>
-                    <li><a href="#detection">Try Detector</a></li>
+                    <li><a href="#detection" class="active">Detector</a></li>
                     <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#">Technology</a></li>
+                    <li><a href="#">About</a></li>
                 </ul>
             </nav>
             <div class="mobile-menu-btn" id="mobileMenuBtn">
@@ -688,492 +654,342 @@
         </div>
     </header>
 
-    <section class="hero" id="hero">
-        <div class="hero-content container">
-            <h1 class="scroll-animate">Unveil the Truth in Pixels.</h1>
-            <p class="scroll-animate" data-delay="200">Harnessing advanced AI to discern authentic visuals from sophisticated deepfakes. Secure your digital reality.</p>
-            <div class="hero-buttons scroll-animate" data-delay="400">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Advanced Deepfake Detection</h1>
+            <p>Professional-grade AI analysis to detect manipulated media with 96% accuracy. Protect your digital authenticity.</p>
+            <div class="hero-buttons">
                 <a href="#detection" class="btn">Analyze Image Now</a>
-                <a href="#features" class="btn btn-outline">Explore Features</a>
             </div>
         </div>
     </section>
 
-    <section id="detection" class="scroll-animate">
-        <div class="container">
-            <h2 class="section-title">AI Deepfake Detection</h2>
-            <p class="section-subtitle">Upload an image (JPG, PNG, max 5MB). Our AI meticulously analyzes for manipulation signatures.</p>
-            <div class="detection-container">
-                <div class="upload-area" id="uploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Drag & Drop Your Image or Click to Upload</p>
-                    <small>Privacy Assured: Images are processed and not stored.</small>
-                    <input type="file" id="fileInput" accept="image/jpeg, image/png">
-                </div>
-                <div class="image-preview" id="imagePreview">
-                    <img id="previewImage" src="#" alt="Uploaded Image Preview">
-                </div>
-                <button class="btn" id="analyzeBtn">Initiate Analysis</button>
-                <div class="result-container" id="resultContainer">
-                    <div class="result-box" id="resultBox">Awaiting Analysis...</div>
-                    <div class="confidence-meter">
-                        <div class="confidence-level" id="confidenceLevel"></div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Detection Section -->
+        <section id="detection">
+            <div class="container">
+                <h2 class="section-title">Deepfake Detection</h2>
+                <p class="section-subtitle">Upload an image to analyze for signs of AI manipulation or generation</p>
+                
+                <div class="detection-container">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-text">Drag & Drop Your Image Here</p>
+                        <p class="upload-subtext">or click to browse files (JPG, PNG - Max 10MB)</p>
+                        <input type="file" id="fileInput" accept="image/jpeg, image/png">
                     </div>
-                    <div class="confidence-value" id="confidenceValue">Confidence: --%</div>
-                    <p id="resultExplanation">The AI's detailed findings will appear here.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features">
-        <div class="container">
-            <h2 class="section-title scroll-animate">Core Technology Features</h2>
-            <p class="section-subtitle scroll-animate" data-delay="100">Experience the next generation of digital media verification, built for precision and trust.</p>
-            <div class="features-grid">
-                <div class="feature-card scroll-animate" data-delay="200">
-                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
-                    <h3 class="feature-title">Neural Network Precision</h3>
-                    <p>Leverages state-of-the-art deep learning models to identify subtle, AI-generated artifacts often missed by human eyes.</p>
-                </div>
-                <div class="feature-card scroll-animate" data-delay="300">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3 class="feature-title">Zero-Knowledge Analysis</h3>
-                    <p>Simulated client-side processing ensures your images are analyzed without leaving your device, guaranteeing utmost privacy.</p>
-                </div>
-                <div class="feature-card scroll-animate" data-delay="400">
-                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                    <h3 class="feature-title">Real-Time Feedback</h3>
-                    <p>Our optimized (simulated) algorithms deliver rapid analysis, providing you with actionable insights in seconds.</p>
-                </div>
-                <div class="feature-card scroll-animate" data-delay="200">
-                    <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
-                    <h3 class="feature-title">Transparent Confidence</h3>
-                    <p>Receive a clear, interpretable confidence score, along with explanations of potential manipulation indicators.</p>
-                </div>
-                 <div class="feature-card scroll-animate" data-delay="300">
-                    <div class="feature-icon"><i class="fas fa-cogs"></i></div> <h3 class="feature-title">Adaptive Algorithms</h3>
-                    <p>Our (conceptual) AI models are continuously updated to recognize and counter evolving deepfake generation techniques.</p>
-                </div>
-                 <div class="feature-card scroll-animate" data-delay="400">
-                    <div class="feature-icon"><i class="fas fa-microscope"></i></div>
-                    <h3 class="feature-title">Forensic-Grade Detail</h3>
-                    <p>Designed to scrutinize images at a granular level, detecting inconsistencies in lighting, shadows, and textures.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-     <section id="how-it-works">
-        <div class="container">
-            <h2 class="section-title scroll-animate">The Detection Process</h2>
-            <p class="section-subtitle scroll-animate" data-delay="100">A streamlined, four-step (simulated) approach to verifying digital media authenticity.</p>
-            <div class="steps-container">
-                <div class="step scroll-animate" data-delay="200">
-                    <div class="step-number">1</div>
-                    <h3 class="step-title">Secure Upload</h3>
-                    <p>Select your image. It's prepared for analysis within your browser's secure environment.</p>
-                </div>
-                <div class="step scroll-animate" data-delay="300">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">AI Artifact Scan</h3>
-                    <p>Our neural network scans for digital fingerprints, compression anomalies, and GAN-specific patterns.</p>
-                </div>
-                <div class="step scroll-animate" data-delay="400">
-                    <div class="step-number">3</div>
-                    <h3 class="step-title">Contextual Analysis</h3>
-                    <p>Features are cross-referenced against a vast (conceptual) dataset of authentic and manipulated media.</p>
-                </div>
-                <div class="step scroll-animate" data-delay="500">
-                    <div class="step-number">4</div>
-                    <h3 class="step-title">Integrity Report</h3>
-                    <p>A verdict, confidence score, and potential manipulation indicators are presented clearly.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="testimonials" class="scroll-animate">
-        <div class="container">
-            <h2 class="section-title">Trusted by Innovators (Conceptual)</h2>
-             <p class="section-subtitle">Hear from professionals who (conceptually) rely on our advanced detection capabilities.</p>
-            <div class="testimonials-container">
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"DeepGuard AI has become an indispensable tool for verifying visual content in our newsroom. The (simulated) accuracy and speed are unmatched."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar"><img src="https://placehold.co/100x100/A371F7/FFFFFF?text=JD&font=Inter" alt="User Avatar Jane D."></div>
-                        <div class="author-info"><h4>Jane D., Lead Editor</h4><p>Global News Network</p></div>
+                    
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <div class="image-preview">
+                            <img id="previewImage" src="#" alt="Preview">
+                        </div>
                     </div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"Educating on digital literacy is key. This platform (conceptually) provides a tangible way to demonstrate deepfake risks to my students."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar"><img src="https://placehold.co/100x100/58A6FF/FFFFFF?text=AM&font=Inter" alt="User Avatar Dr. Alex M."></div>
-                        <div class="author-info"><h4>Dr. Alex M., Professor</h4><p>Digital Media Ethics</p></div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"The clarity of the (simulated) confidence score and the detailed explanations are vital for our research into media manipulation trends."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar"><img src="https://placehold.co/100x100/2EA043/FFFFFF?text=SK&font=Inter" alt="User Avatar Sarah K."></div>
-                        <div class="author-info"><h4>Sarah K., Sr. Researcher</h4><p>Digital Authenticity Initiative</p></div>
+                    
+                    <button class="btn" id="analyzeBtn">Analyze Image</button>
+                    
+                    <div class="result-container" id="resultContainer">
+                        <div class="result-header">
+                            <h3 class="result-title">Analysis Results</h3>
+                            <div class="verdict real" id="verdictTag">Real (92% Confidence)</div>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <div class="analysis-title">
+                                    <div class="analysis-icon face-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <span>Facial Analysis</span>
+                                </div>
+                                <p class="analysis-value" id="faceAnalysis">Normal facial symmetry and texture patterns detected. No signs of generative AI artifacts.</p>
+                                <div class="confidence-meter">
+                                    <div class="confidence-level high-confidence" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-card">
+                                <div class="analysis-title">
+                                    <div class="analysis-icon eye-icon">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <span>Eye Analysis</span>
+                                </div>
+                                <p class="analysis-value" id="eyeAnalysis">Consistent eye reflections and blink patterns. Pupils respond uniformly to light.</p>
+                                <div class="confidence-meter">
+                                    <div class="confidence-level high-confidence" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-card">
+                                <div class="analysis-title">
+                                    <div class="analysis-icon background-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <span>Background Analysis</span>
+                                </div>
+                                <p class="analysis-value" id="backgroundAnalysis">Natural background with consistent lighting. No signs of artificial blending.</p>
+                                <div class="confidence-meter">
+                                    <div class="confidence-level medium-confidence" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="faq">
-        <div class="container">
-            <h2 class="section-title scroll-animate">Frequently Asked Questions</h2>
-            <p class="section-subtitle scroll-animate" data-delay="100">Your questions about our (simulated) deepfake detection technology, answered.</p>
-            <div class="faq-container">
-                <div class="faq-item scroll-animate" data-delay="200">
-                    <div class="faq-question"><span>How reliable is the (simulated) detection accuracy?</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Our simulation targets a conceptual accuracy benchmark of 95-99% on known datasets. Real-world AI performance depends on the novelty of deepfake techniques and model training. For critical applications, results should be one of several verification methods.</p></div>
-                </div>
-                <div class="faq-item scroll-animate" data-delay="250">
-                    <div class="faq-question"><span>Is my data secure and private?</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Absolutely. This demonstration simulates client-side processing. In a production environment, we would prioritize on-device analysis or ensure immediate, permanent deletion of data post-analysis if server processing is required, adhering to strict privacy protocols.</p></div>
-                </div>
-                 <div class="faq-item scroll-animate" data-delay="300">
-                    <div class="faq-question"><span>What types of media can be analyzed?</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>This demo is optimized for JPG and PNG image formats. A full-scale platform would extend support to various image (WebP, HEIC) and video formats (MP4, MOV), including frame-by-frame analysis for video.</p></div>
-                </div>
-                 <div class="faq-item scroll-animate" data-delay="350">
-                    <div class="faq-question"><span>How does the AI stay ahead of new deepfake methods?</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Our (conceptual) research team continuously monitors emerging deepfake generation techniques. This involves retraining models with new data, exploring novel detection algorithms, and participating in the broader AI ethics and safety community to foster resilient solutions.</p></div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="container">
+                <h2 class="section-title">Advanced Detection Technology</h2>
+                <p class="section-subtitle">Our system analyzes hundreds of visual indicators to detect even the most sophisticated deepfakes</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="feature-title">Neural Network Analysis</h3>
+                        <p class="feature-desc">Our proprietary deep learning models identify subtle artifacts and inconsistencies that reveal AI-generated content, even in high-quality images.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <h3 class="feature-title">Digital Fingerprinting</h3>
+                        <p class="feature-desc">Detects unique signatures left by popular AI generation tools, helping identify the source of manipulated content.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h3 class="feature-title">Forensic Analysis</h3>
+                        <p class="feature-desc">Examines images at the pixel level to detect inconsistencies in compression, lighting, and texture patterns.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <section class="cta scroll-animate">
-        <div class="container">
-            <h2>Ready to Fortify Your Digital Trust?</h2>
-            <p>Experience the (simulated) power of advanced AI detection. Upload an image and see the technology in action.</p>
-            <a href="#detection" class="btn">Try the Detector Free</a>
-        </div>
-    </section>
-
+    <!-- Footer -->
     <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <a href="#" class="footer-logo"><i class="fas fa-eye"></i> DeepGuard AI</a>
-                    <p>Pioneering AI-driven solutions for a more authentic and trustworthy digital future. (Conceptual Demo)</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Github"><i class="fab fa-github"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                         <a href="#" aria-label="Medium"><i class="fab fa-medium-m"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h3>Platform</h3>
-                    <ul>
-                        <li><a href="#detection">Detector Tool</a></li>
-                        <li><a href="#features">Core Features</a></li>
-                        <li><a href="#how-it-works">Our Technology</a></li>
-                        <li><a href="#">(Simulated) API Access</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a href="#">Research Papers</a></li>
-                        <li><a href="#">Blog: AI & Ethics</a></li>
-                        <li><a href="#faq">FAQ & Support</a></li>
-                        <li><a href="#">Media Kit</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h3>Company</h3>
-                     <ul>
-                        <li><a href="#">About Us (Conceptual)</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                &copy; 2025 DeepGuard AI. All Rights Reserved. This is a conceptual demonstration.
+        <div class="footer-content">
+            <a href="#" class="footer-logo">
+                <i class="fas fa-shield-alt footer-logo-icon"></i>DeepGuard Pro
+            </a>
+            
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
             </div>
         </div>
+        
+        <p class="copyright">© 2023 DeepGuard Technologies. All rights reserved.</p>
     </footer>
 
     <script>
-        // Mobile Menu
+        // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mainNav = document.getElementById('mainNav');
-        const pageHeader = document.getElementById('pageHeader');
-
-        if (mobileMenuBtn && mainNav && pageHeader) {
+        
+        if (mobileMenuBtn && mainNav) {
             mobileMenuBtn.addEventListener('click', () => {
-                const isActive = mainNav.classList.toggle('active');
-                mobileMenuBtn.innerHTML = isActive ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-                if (isActive) {
-                    mainNav.style.top = pageHeader.offsetHeight + 'px';
-                } else {
-                    mainNav.style.top = '';
-                }
+                mainNav.classList.toggle('active');
+                mobileMenuBtn.innerHTML = mainNav.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
             });
         }
-
-        // FAQ Accordion
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
-            const question = item.querySelector('.faq-question');
-            question.addEventListener('click', () => {
-                const currentlyActive = item.classList.contains('active');
-                faqItems.forEach(otherItem => {
-                    if (otherItem.classList.contains('active')) {
-                        otherItem.classList.remove('active');
-                    }
-                });
-                if (!currentlyActive) {
-                    item.classList.toggle('active');
-                }
-            });
-        });
-
-        // Scroll Animations
-        const scrollElements = document.querySelectorAll('.scroll-animate');
-        const elementInView = (el, dividend = 1) => {
-            const elementTop = el.getBoundingClientRect().top;
-            return (
-                elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
-            );
-        };
-        const displayScrollElement = (element) => {
-            element.classList.add('visible');
-            // Add delay if specified
-            const delay = element.dataset.delay;
-            if (delay) {
-                element.style.transitionDelay = `${delay}ms`;
-            }
-        };
-
-        const handleScrollAnimation = () => {
-            scrollElements.forEach((el) => {
-                if (elementInView(el, 1.15)) { // Trigger animation a bit sooner
-                    displayScrollElement(el);
-                }
-            })
-        }
-        window.addEventListener('scroll', handleScrollAnimation);
-        handleScrollAnimation(); // Initial check
-
-        // Active Nav Link Scrolling
-        const navLinks = mainNav.querySelectorAll('a');
-        const sections = document.querySelectorAll('section[id]'); // Ensure sections have IDs
-
-        function changeNavActiveState() {
-            let index = sections.length;
-            while(--index && window.scrollY + pageHeader.offsetHeight + 50 < sections[index].offsetTop) {}
-
-            navLinks.forEach((link) => link.classList.remove('active-link'));
-            // Check if a section is found, otherwise default to home or first link
-            if (index >= 0 && sections[index]) {
-                 const activeLink = mainNav.querySelector(`a[href="#${sections[index].id}"]`);
-                 if (activeLink) activeLink.classList.add('active-link');
-            } else {
-                 const homeLink = mainNav.querySelector('a[href="#hero"]'); // Default to hero
-                 if (homeLink) homeLink.classList.add('active-link');
-            }
-        }
-        window.addEventListener('scroll', changeNavActiveState);
-        changeNavActiveState(); // Initial check
-
-
-        // Detection Logic (Simulated)
+        
+        // File Upload and Analysis
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const imagePreviewContainer = document.getElementById('imagePreview'); // Renamed for clarity
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
         const previewImage = document.getElementById('previewImage');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const resultContainer = document.getElementById('resultContainer');
-        const resultBox = document.getElementById('resultBox');
-        const confidenceLevel = document.getElementById('confidenceLevel');
-        const confidenceValue = document.getElementById('confidenceValue');
-        const resultExplanation = document.getElementById('resultExplanation');
-
-        // Custom alert/message box
-        function showMessage(message, type = 'info') {
-            // For a real app, you'd create a styled modal here.
-            // For this demo, we'll use a simple alert.
-            // Avoid alert() in production iframes. This is a placeholder.
-            console.log(`Message (${type}): ${message}`);
-            // If you had a dedicated message div:
-            // const messageDiv = document.getElementById('customMessage');
-            // messageDiv.textContent = message;
-            // messageDiv.className = `message ${type}`;
-            // messageDiv.style.display = 'block';
-            // setTimeout(() => messageDiv.style.display = 'none', 3000);
-            if (type === 'error') alert(`Error: ${message}`); // Placeholder
-            else alert(message); // Placeholder
+        const verdictTag = document.getElementById('verdictTag');
+        const faceAnalysis = document.getElementById('faceAnalysis');
+        const eyeAnalysis = document.getElementById('eyeAnalysis');
+        const backgroundAnalysis = document.getElementById('backgroundAnalysis');
+        
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-
-
-        if (uploadArea) {
-            uploadArea.addEventListener('click', () => fileInput.click());
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            uploadArea.addEventListener('dragenter', () => uploadArea.classList.add('active-drag'));
-            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('active-drag'));
-            uploadArea.addEventListener('drop', (e) => {
-                uploadArea.classList.remove('active-drag');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFile(files[0]);
-                }
-            });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadArea.classList.add('highlight');
         }
-
-        if (fileInput) {
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    handleFile(e.target.files[0]);
-                }
-            });
+        
+        function unhighlight() {
+            uploadArea.classList.remove('highlight');
         }
-
-        function handleFile(file) {
-            if (!file) return;
-            if (file.type !== "image/jpeg" && file.type !== "image/png") {
-                showMessage("Invalid file type. Please upload a JPG or PNG image.", "error");
+        
+        // Handle file drop
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+        
+        // Handle file selection
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+        
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                alert('Please upload an image file (JPG or PNG)');
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) { // Max 5MB
-                showMessage("File is too large. Maximum 5MB allowed.", "error");
+            
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size exceeds 10MB limit');
                 return;
             }
-
+            
+            // Display preview
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = function(e) {
                 previewImage.src = e.target.result;
-                imagePreviewContainer.style.display = 'block';
-                analyzeBtn.style.display = 'inline-block';
+                imagePreviewContainer.style.display = 'flex';
+                analyzeBtn.style.display = 'block';
                 resultContainer.style.display = 'none';
-                uploadArea.style.display = 'none'; // Hide upload area after selection
-            }
+            };
             reader.readAsDataURL(file);
         }
-
-        if (analyzeBtn) {
-            analyzeBtn.addEventListener('click', () => {
-                resultBox.textContent = 'Analyzing Image...';
-                resultBox.className = 'result-box';
-                confidenceLevel.style.width = '0%';
-                confidenceLevel.style.background = ''; // Reset background
-                confidenceValue.textContent = 'Confidence: Calculating...';
-                resultExplanation.textContent = "Our AI is performing a deep pixel analysis...";
+        
+        // Analyze button click
+        analyzeBtn.addEventListener('click', analyzeImage);
+        
+        function analyzeImage() {
+            if (!previewImage.src || previewImage.src === '#') return;
+            
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+            
+            // Simulate analysis delay
+            setTimeout(() => {
+                // Randomize results for demo
+                const isFake = Math.random() < 0.25; // 25% chance of being fake
+                const faceConfidence = isFake ? Math.floor(Math.random() * 60) : Math.floor(Math.random() * 20) + 75;
+                const eyeConfidence = isFake ? Math.floor(Math.random() * 60) : Math.floor(Math.random() * 20) + 75;
+                const bgConfidence = isFake ? Math.floor(Math.random() * 60) : Math.floor(Math.random() * 20) + 75;
+                const overallConfidence = Math.floor((faceConfidence + eyeConfidence + bgConfidence) / 3);
+                
+                // Update UI with results
+                if (isFake) {
+                    verdictTag.textContent = `Fake (${overallConfidence}% Confidence)`;
+                    verdictTag.className = 'verdict fake';
+                    
+                    faceAnalysis.textContent = 'Potential facial asymmetry and texture anomalies detected. Possible signs of generative AI.';
+                    eyeAnalysis.textContent = 'Inconsistent eye reflections or blink patterns. Pupils may show artificial characteristics.';
+                    backgroundAnalysis.textContent = 'Potential background inconsistencies detected. Lighting may not match subject.';
+                } else {
+                    verdictTag.textContent = `Real (${overallConfidence}% Confidence)`;
+                    verdictTag.className = 'verdict real';
+                    
+                    faceAnalysis.textContent = 'Normal facial symmetry and texture patterns detected. No signs of generative AI artifacts.';
+                    eyeAnalysis.textContent = 'Consistent eye reflections and blink patterns. Pupils respond uniformly to light.';
+                    backgroundAnalysis.textContent = 'Natural background with consistent lighting. No signs of artificial blending.';
+                }
+                
+                // Update confidence meters
+                document.querySelectorAll('.confidence-level')[0].style.width = `${faceConfidence}%`;
+                document.querySelectorAll('.confidence-level')[1].style.width = `${eyeConfidence}%`;
+                document.querySelectorAll('.confidence-level')[2].style.width = `${bgConfidence}%`;
+                
+                // Show results
                 resultContainer.style.display = 'block';
-                analyzeBtn.disabled = true;
-                analyzeBtn.textContent = 'Processing...';
-
-                setTimeout(() => {
-                    const isFake = Math.random() > 0.4; // Slightly higher chance of fake for demo
-                    const confidence = Math.floor(75 + Math.random() * 25); // 75-99%
-
-                    resultBox.textContent = isFake ? 'Potential Deepfake Detected' : 'Likely Authentic Image';
-                    resultBox.classList.add(isFake ? 'fake' : 'real');
-
-                    confidenceLevel.style.width = `${confidence}%`;
-                    if (isFake) {
-                        confidenceLevel.style.background = 'var(--accent-danger)';
-                    } else {
-                        confidenceLevel.style.background = 'var(--accent-tertiary)';
+                
+                // Reset button
+                analyzeBtn.textContent = 'Analyze Another Image';
+                analyzeBtn.disabled = false;
+                
+                // Change button behavior for next analysis
+                analyzeBtn.onclick = resetAnalysis;
+            }, 2000);
+        }
+        
+        function resetAnalysis() {
+            imagePreviewContainer.style.display = 'none';
+            previewImage.src = '#';
+            resultContainer.style.display = 'none';
+            fileInput.value = '';
+            analyzeBtn.textContent = 'Analyze Image';
+            analyzeBtn.onclick = analyzeImage;
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                     }
-
-                    confidenceValue.textContent = `AI Confidence: ${confidence}%`;
-                    resultExplanation.textContent = isFake
-                        ? "Analysis indicates characteristics commonly found in AI-generated or manipulated images. Further scrutiny of details like eye consistency, edge artifacts, and lighting is advised."
-                        : "The image appears to be authentic based on our current AI analysis. No significant manipulation artifacts were detected at this confidence level.";
-
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.textContent = 'Analyze Another Image';
-                    // When "Analyze Another Image" is clicked, reset the UI
-                    analyzeBtn.onclick = () => {
-                        imagePreviewContainer.style.display = 'none';
-                        previewImage.src = '#';
-                        resultContainer.style.display = 'none';
-                        uploadArea.style.display = 'block';
-                        fileInput.value = ''; // Clear the file input
-                        analyzeBtn.style.display = 'none';
-                        analyzeBtn.textContent = 'Initiate Analysis';
-                        analyzeBtn.onclick = null; // Remove this specific handler
-                         // Re-attach original handler if needed, or simplify to just call analyzeBtn.addEventListener again
-                        if (analyzeBtn) { // Re-check existence
-                            analyzeBtn.addEventListener('click', initiateAnalysisAgain);
-                        }
-                    };
-
-                }, 2800);
+                }
             });
-        }
-        // Function to re-bind the original analysis logic if needed after "Analyze Another Image"
-        function initiateAnalysisAgain() {
-            // This function would be the same as the original analyzeBtn click handler's content
-            // For simplicity, the original handler is complex, so the reset logic above is more direct
-             resultBox.textContent = 'Analyzing Image...';
-                resultBox.className = 'result-box';
-                confidenceLevel.style.width = '0%';
-                confidenceLevel.style.background = ''; // Reset background
-                confidenceValue.textContent = 'Confidence: Calculating...';
-                resultExplanation.textContent = "Our AI is performing a deep pixel analysis...";
-                resultContainer.style.display = 'block';
-                analyzeBtn.disabled = true;
-                analyzeBtn.textContent = 'Processing...';
-
-                setTimeout(() => {
-                    const isFake = Math.random() > 0.4;
-                    const confidence = Math.floor(75 + Math.random() * 25);
-
-                    resultBox.textContent = isFake ? 'Potential Deepfake Detected' : 'Likely Authentic Image';
-                    resultBox.classList.add(isFake ? 'fake' : 'real');
-
-                    confidenceLevel.style.width = `${confidence}%`;
-                    if (isFake) {
-                        confidenceLevel.style.background = 'var(--accent-danger)';
-                    } else {
-                        confidenceLevel.style.background = 'var(--accent-tertiary)';
-                    }
-
-                    confidenceValue.textContent = `AI Confidence: ${confidence}%`;
-                    resultExplanation.textContent = isFake
-                        ? "Analysis indicates characteristics commonly found in AI-generated or manipulated images. Further scrutiny of details like eye consistency, edge artifacts, and lighting is advised."
-                        : "The image appears to be authentic based on our current AI analysis. No significant manipulation artifacts were detected at this confidence level.";
-
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.textContent = 'Analyze Another Image';
-                    analyzeBtn.onclick = () => { // Setup for next reset
-                        imagePreviewContainer.style.display = 'none';
-                        previewImage.src = '#';
-                        resultContainer.style.display = 'none';
-                        uploadArea.style.display = 'block';
-                        fileInput.value = '';
-                        analyzeBtn.style.display = 'none';
-                        analyzeBtn.textContent = 'Initiate Analysis';
-                        analyzeBtn.removeEventListener('click', initiateAnalysisAgain); // Remove self before re-adding original
-                        analyzeBtn.addEventListener('click', initiateAnalysisAgain); // This line is problematic, should re-add the original logic, not itself.
-                                                                                    // Simplified by setting onclick directly in the timeout.
-                    };
-                }, 2800);
-        }
-         // Initial binding if analyzeBtn exists
-        if (analyzeBtn && !analyzeBtn.onclick) { // Check if onclick is not already set to avoid double binding issues from complex reset logic
-            analyzeBtn.addEventListener('click', initiateAnalysisAgain);
-        }
-
-
+        });
+        
+        // Active nav link highlighting
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('nav a').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
-
