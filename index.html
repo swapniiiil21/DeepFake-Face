@@ -1087,11 +1087,11 @@
 
         // Ensure the DOM is fully loaded before running JavaScript
         window.onload = async () => {
-            // Inform the user about simulated analysis due to API limitations
-            displayMessageBox(
-                'Important Notice',
-                'Due to API access limitations in this environment, the deepfake detection and AI insights are currently simulated. All features, including report generation and download, will function as expected with simulated data.'
-            );
+            // Removed the displayMessageBox call that generated the "Important Notice" pop-up.
+            // displayMessageBox(
+            //     'Important Notice',
+            //     'Due to API access limitations in this environment, the deepfake detection and AI insights are currently simulated. All features, including report generation and download, will function as expected with simulated data.'
+            // );
 
             try {
                 // Get references to all necessary DOM elements
