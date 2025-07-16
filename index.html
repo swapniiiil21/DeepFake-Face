@@ -809,15 +809,13 @@
                 </div>
                 <div class="image-preview" id="imagePreview">
                     <img id="previewImage" src="#" alt="Uploaded Image Preview">
-                    <!-- Canvas for drawing detections is no longer needed as Gemini API handles analysis conceptually -->
-                    <!-- <canvas id="overlayCanvas"></canvas> -->
                 </div>
                 <button class="btn" id="analyzeBtn">Initiate Analysis</button>
 
                 <!-- Loading Indicator HTML -->
                 <div class="loading-indicator" id="loadingIndicator" style="display: none;">
                     <div class="spinner"></div>
-                    <p>Sending image to AI for comprehensive analysis...</p>
+                    <p>Performing simulated AI analysis...</p>
                 </div>
 
                 <div class="result-container" id="resultContainer">
@@ -829,7 +827,7 @@
                     <p id="resultExplanation">The AI's detailed findings will appear here.</p>
                     <button class="btn" id="downloadReportBtn" style="margin-top: 25px; display: none;">Download Analysis Report</button>
                     <div id="llmInsightsContainer" style="margin-top: 25px; display: none;">
-                        <h4>Deepfake Insights from AI</h4>
+                        <h4>Deepfake Insights from AI (Simulated)</h4>
                         <div id="llmInsightsContent"></div>
                     </div>
                 </div>
@@ -886,17 +884,14 @@
                     <p>Select your image. It's prepared for analysis within your browser's secure environment.</p>
                 </div>
                 <div class="step scroll-animate" data-delay="300">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">AI-Powered Scan</h3>
-                    <p>Our advanced AI (via Gemini API) scans for digital fingerprints, compression anomalies, and GAN-specific patterns across the entire image.</p>
+                    <h3 class="step-title">Simulated AI Scan</h3>
+                    <p>Our advanced AI (simulated) scans for digital fingerprints, compression anomalies, and GAN-specific patterns across the entire image.</p>
                 </div>
                 <div class="step scroll-animate" data-delay="400">
-                    <div class="step-number">3</div>
                     <h3 class="step-title">Comprehensive Analysis</h3>
                     <p>The AI provides a detailed report on faces, background, lighting, and other subtle inconsistencies.</p>
                 </div>
                 <div class="step scroll-animate" data-delay="500">
-                    <div class="step-number">4</div>
                     <h3 class="step-title">Integrity Report & Download</h3>
                     <p>A verdict, confidence score, and a downloadable detailed report are presented clearly.</p>
                 </div>
@@ -971,7 +966,7 @@
                         How does your AI detect deepfakes? <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>Our AI (via Gemini API) uses advanced large language models to analyze images for subtle inconsistencies, artifacts, and patterns characteristic of AI-generated content. It examines facial features, background elements, lighting, and overall image cohesion to provide a comprehensive analysis.</p>
+                        <p>Our AI (simulated in this demo) analyzes images for subtle inconsistencies, artifacts, and patterns characteristic of AI-generated content. It examines facial features, background elements, lighting, and overall image cohesion to provide a comprehensive analysis.</p>
                     </div>
                 </div>
                 <div class="faq-item scroll-animate" data-delay="400">
@@ -979,7 +974,7 @@
                         Is my uploaded image stored or shared? <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>No. We prioritize your privacy. Images uploaded to the detector are sent to the Gemini API for analysis and are not stored on any servers or shared with any third parties beyond the immediate API call.</p>
+                        <p>No. We prioritize your privacy. Images uploaded to the detector are processed **entirely within your browser** and are not stored on any servers or shared with any third parties.</p>
                     </div>
                 </div>
                 <div class="faq-item scroll-animate" data-delay="500">
@@ -987,7 +982,7 @@
                         What image formats are supported? <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>Currently, our detector supports common image formats such as JPG (JPEG) and PNG. We recommend images be under 5MB for optimal API performance.</p>
+                        <p>Currently, our detector supports common image formats such as JPG (JPEG) and PNG. We recommend images be under 5MB for optimal performance.</p>
                     </div>
                 </div>
                 <div class="faq-item scroll-animate" data-delay="600">
@@ -995,7 +990,7 @@
                         How accurate is the deepfake detection? <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>Our AI models are continuously updated and designed to be highly effective. While no detection method is 100% foolproof due to the evolving nature of deepfake technology, our goal is to provide a robust and reliable indicator based on the comprehensive analysis by the Gemini API.</p>
+                        <p>In this demo, the deepfake detection is simulated. In a real-world application, AI models are continuously updated and designed to be highly effective. While no detection method is 100% foolproof due to the evolving nature of deepfake technology, the goal is to provide a robust and reliable indicator based on comprehensive analysis.</p>
                     </div>
                 </div>
             </div>
@@ -1092,6 +1087,12 @@
 
         // Ensure the DOM is fully loaded before running JavaScript
         window.onload = async () => {
+            // Inform the user about simulated analysis due to API limitations
+            displayMessageBox(
+                'Important Notice',
+                'Due to API access limitations in this environment, the deepfake detection and AI insights are currently simulated. All features, including report generation and download, will function as expected with simulated data.'
+            );
+
             try {
                 // Get references to all necessary DOM elements
                 const uploadArea = document.getElementById('uploadArea');
@@ -1105,7 +1106,7 @@
                 const confidenceValue = document.getElementById('confidenceValue');
                 const resultExplanation = document.getElementById('resultExplanation');
                 const loadingIndicator = document.getElementById('loadingIndicator');
-                const downloadReportBtn = document.getElementById('downloadReportBtn'); // New download button
+                const downloadReportBtn = document.getElementById('downloadReportBtn');
                 const llmInsightsContainer = document.getElementById('llmInsightsContainer');
                 const llmInsightsContent = document.getElementById('llmInsightsContent');
                 const pageHeader = document.getElementById('pageHeader');
@@ -1113,8 +1114,7 @@
                 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
                 const navLinks = document.querySelectorAll('#mainNav ul li a');
 
-                let uploadedFile = null; // Variable to store the file selected by the user
-                let uploadedImageBase64 = null; // To store base64 string for LLM
+                let uploadedFile = null;
 
                 // --- Header Scroll Effect ---
                 window.addEventListener('scroll', () => {
@@ -1186,7 +1186,7 @@
                     });
                 });
 
-                // --- Deepfake Detection Logic (Gemini API based) ---
+                // --- Deepfake Detection Logic (Simulated) ---
 
                 // Helper function to reset the detection area UI to its initial state
                 function resetDetectionUI() {
@@ -1195,9 +1195,9 @@
                     analyzeBtn.style.display = 'none';
                     resultContainer.style.display = 'none';
                     loadingIndicator.style.display = 'none';
-                    downloadReportBtn.style.display = 'none'; // Hide download button
-                    llmInsightsContainer.style.display = 'none'; // Hide LLM insights container
-                    llmInsightsContent.innerHTML = ''; // Clear LLM content
+                    downloadReportBtn.style.display = 'none';
+                    llmInsightsContainer.style.display = 'none';
+                    llmInsightsContent.innerHTML = '';
                     resultBox.textContent = 'Awaiting Analysis...';
                     resultBox.className = 'result-box';
                     confidenceLevel.style.width = '0%';
@@ -1207,8 +1207,7 @@
                     uploadArea.classList.remove('active-drag');
                     fileInput.value = '';
                     uploadedFile = null;
-                    uploadedImageBase64 = null; // Clear base64 data
-                    fullAnalysisReport = ''; // Clear stored report
+                    fullAnalysisReport = '';
                 }
 
                 // --- Event Listeners for File Upload ---
@@ -1248,23 +1247,20 @@
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             previewImage.src = e.target.result;
-                            // Store the base64 string, removing the "data:image/jpeg;base64," prefix
-                            uploadedImageBase64 = e.target.result.split(',')[1];
-
                             imagePreview.style.display = 'block';
                             analyzeBtn.style.display = 'block';
                             resultContainer.style.display = 'none';
                             loadingIndicator.style.display = 'none';
-                            downloadReportBtn.style.display = 'none'; // Hide download button
-                            llmInsightsContainer.style.display = 'none'; // Hide LLM insights container
-                            llmInsightsContent.innerHTML = ''; // Clear LLM content
+                            downloadReportBtn.style.display = 'none';
+                            llmInsightsContainer.style.display = 'none';
+                            llmInsightsContent.innerHTML = '';
                             resultBox.textContent = 'Ready for Analysis...';
                             resultBox.className = 'result-box';
                             confidenceLevel.style.width = '0%';
                             confidenceLevel.style.backgroundColor = '';
                             confidenceValue.textContent = 'Confidence: --%';
                             resultExplanation.textContent = "Click 'Initiate Analysis' to begin.";
-                            fullAnalysisReport = ''; // Clear stored report
+                            fullAnalysisReport = '';
                         };
                         reader.readAsDataURL(file);
                     } else {
@@ -1273,7 +1269,7 @@
                     }
                 }
 
-                // --- Analyze Button Click Handler (Gemini API) ---
+                // --- Analyze Button Click Handler (Simulated) ---
                 analyzeBtn.addEventListener('click', async () => {
                     if (!uploadedFile) {
                         displayMessageBox('No Image', 'Please upload an image first.');
@@ -1285,167 +1281,120 @@
                     resultBox.className = 'result-box';
                     resultContainer.style.display = 'block';
                     loadingIndicator.style.display = 'flex';
-                    loadingIndicator.querySelector('p').textContent = 'Sending image to AI for comprehensive analysis...';
+                    loadingIndicator.querySelector('p').textContent = 'Performing simulated AI analysis...';
                     confidenceLevel.style.width = '0%';
                     confidenceLevel.style.backgroundColor = '';
                     confidenceValue.textContent = 'Confidence: --%';
-                    resultExplanation.textContent = "AI is processing the image for deepfake indicators, including faces and background details.";
+                    resultExplanation.textContent = "Simulating AI processing for deepfake indicators...";
                     analyzeBtn.disabled = true;
-                    downloadReportBtn.style.display = 'none'; // Hide download button during analysis
-                    llmInsightsContainer.style.display = 'none'; // Hide LLM insights container
-                    llmInsightsContent.innerHTML = ''; // Clear LLM content
-                    fullAnalysisReport = ''; // Clear stored report
+                    downloadReportBtn.style.display = 'none';
+                    llmInsightsContainer.style.display = 'none';
+                    llmInsightsContent.innerHTML = '';
+                    fullAnalysisReport = '';
 
-                    // Construct a detailed prompt for the LLM to perform deepfake analysis
-                    const prompt = `
-                        You are an advanced AI trained to analyze images for signs of deepfake manipulation.
-                        Examine the provided image carefully and provide a simulated, detailed analysis report.
-                        Your report should cover the following aspects:
-
-                        **1. Overall Image Cohesion:**
-                        - Does the image look natural and consistent as a whole?
-                        - Are there any general inconsistencies in resolution, sharpness, or grain across different parts of the image?
-
-                        **2. Face Analysis (if faces are present):**
-                        - Are facial features (eyes, nose, mouth, ears) natural in their appearance and proportion?
-                        - Is the skin texture consistent, or are there areas that appear too smooth, too grainy, or unnaturally blurred/sharp?
-                        - Are there any odd blurs, pixelations, or unnatural lighting on faces?
-                        - Do the eyes appear natural (e.g., consistent reflections, natural gaze, realistic blinks if applicable)?
-                        - Is the head pose and facial expression consistent with the body and overall scene?
-
-                        **3. Background Analysis:**
-                        - Does the background appear natural and consistent with the foreground subject(s)?
-                        - Are there any strange distortions, repetitions, or inconsistencies in the background elements (e.g., repeating patterns, unnatural straight lines, warped objects)?
-                        - Is the depth of field and focus consistent between the foreground and background?
-
-                        **4. Lighting and Shadows Consistency:**
-                        - Are the lighting conditions consistent across the entire image (e.g., light source direction, intensity, color)?
-                        - Are shadows realistic and consistent with the light source and object positions? Are there any missing or unnatural shadows?
-
-                        **5. Digital Artifacts and Anomalies:**
-                        - Are there any subtle digital artifacts, noise patterns, or strange edges that might indicate AI generation (e.g., compression artifacts, GAN-specific textures, blending issues)?
-                        - Look for pixel-level irregularities that might not be visible to the naked eye but can be indicative of manipulation.
-
-                        **Conclusion:**
-                        Based on your comprehensive analysis, state clearly whether the image *appears* to be "Real" or "Potentially Fake". Provide a brief, concise reason for your conclusion, referencing your observations above.
-                        Finally, provide a simulated "Confidence Score" as a percentage (e.g., "Confidence: 95% Real" or "Confidence: 88% Fake").
-
-                        Format your response clearly with headings for each section.
-                    `;
-
-                    let chatHistory = [];
-                    chatHistory.push({
-                        role: "user",
-                        parts: [
-                            { text: prompt },
-                            {
-                                inlineData: {
-                                    mimeType: uploadedFile.type, // Use the actual mime type of the uploaded file
-                                    data: uploadedImageBase64
-                                }
-                            }
-                        ]
-                    });
-
-                    const payload = { contents: chatHistory };
-                    const apiKey = ""; // Leave as-is, Canvas will provide in runtime
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // 2-second delay
 
                     try {
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                        // Simulate a random result
+                        const isFake = Math.random() > 0.5; // 50/50 chance
+                        let simulatedResult;
+                        let simulatedConfidence;
+                        let simulatedExplanation;
 
-                        // Check if the response itself indicates an error (e.g., 4xx or 5xx status)
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            console.error('API Error Response:', errorData);
-                            throw new Error(`API call failed with status ${response.status}: ${errorData.error.message || 'Unknown error'}`);
-                        }
+                        if (isFake) {
+                            simulatedResult = 'Potentially Fake';
+                            simulatedConfidence = Math.floor(Math.random() * 20) + 75; // 75-94% fake
+                            simulatedExplanation = `
+                                **1. Overall Image Cohesion:**
+                                - The image shows subtle inconsistencies in grain and sharpness between the subject and background, suggesting a composite.
 
-                        const result = await response.json();
-                        console.log('Gemini API raw response received:', result);
+                                **2. Face Analysis:**
+                                - Facial features appear slightly unnatural, particularly around the eyes, with minor blurring. Skin texture seems overly smooth in some areas.
+                                - Lighting on the face doesn't perfectly match the ambient light of the background, causing a slight disconnect.
 
-                        // Robustly check for the expected structure
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0 &&
-                            result.candidates[0].content.parts[0].text) {
+                                **3. Background Analysis:**
+                                - The background exhibits minor distortions and a repetitive pattern in the distant foliage, common in GAN-generated scenes.
+                                - Depth of field appears inconsistent, with some elements in the mid-ground being unnaturally sharp or blurred compared to the foreground.
 
-                            const aiResponseText = result.candidates[0].content.parts[0].text;
-                            fullAnalysisReport = aiResponseText; // Store the full report
+                                **4. Lighting and Shadows Consistency:**
+                                - Shadows cast by the subject are slightly misaligned with the primary light source visible in the background.
+                                - There are subtle inconsistencies in highlight intensity on the subject compared to environmental reflections.
 
-                            // Extract verdict and confidence from the AI response for display
-                            const verdictMatch = aiResponseText.match(/Conclusion:\s*(Real|Potentially Fake)/i);
-                            const confidenceMatch = aiResponseText.match(/Confidence:\s*(\d+)%/i);
+                                **5. Digital Artifacts and Anomalies:**
+                                - Upon close inspection, faint pixel-level artifacts are detectable along the edges of the subject, indicative of digital blending.
+                                - Slight color shifts are present where the subject meets the background.
 
-                            let simulatedResult = 'Uncertain';
-                            let simulatedConfidence = 0;
-
-                            if (verdictMatch && verdictMatch[1]) {
-                                simulatedResult = verdictMatch[1];
-                            }
-                            if (confidenceMatch && confidenceMatch[1]) {
-                                simulatedConfidence = parseInt(confidenceMatch[1]);
-                            } else {
-                                // If confidence not explicitly found, derive a random one based on verdict
-                                if (simulatedResult.toLowerCase().includes('real')) {
-                                    simulatedConfidence = Math.floor(Math.random() * 20) + 80; // 80-99% real
-                                } else if (simulatedResult.toLowerCase().includes('fake')) {
-                                    simulatedConfidence = Math.floor(Math.random() * 20) + 80; // 80-99% fake
-                                } else {
-                                    simulatedConfidence = Math.floor(Math.random() * 30) + 60; // 60-89% uncertain
-                                }
-                            }
-
-                            // Update UI with AI prediction result
-                            resultBox.textContent = `Verdict: ${simulatedResult}`;
-                            resultBox.classList.remove('real', 'fake');
-                            if (simulatedResult.toLowerCase().includes('fake')) {
-                                resultBox.classList.add('fake');
-                                confidenceLevel.style.backgroundColor = 'var(--accent-danger)';
-                            } else if (simulatedResult.toLowerCase().includes('real')) {
-                                resultBox.classList.add('real');
-                                confidenceLevel.style.backgroundColor = 'var(--accent-tertiary)';
-                            } else {
-                                // Default color if uncertain
-                                confidenceLevel.style.backgroundColor = 'var(--accent-secondary)';
-                            }
-
-                            setTimeout(() => {
-                                confidenceLevel.style.width = `${simulatedConfidence}%`;
-                            }, 100);
-                            confidenceValue.textContent = `Confidence: ${simulatedConfidence}%`;
-
-                            llmInsightsContent.innerHTML = aiResponseText.replace(/\n/g, '<br>'); // Display full AI text
-                            llmInsightsContainer.style.display = 'block'; // Show LLM insights container
-                            resultExplanation.textContent = "See the detailed AI analysis above.";
-                            downloadReportBtn.style.display = 'block'; // Show download button
-
+                                **Conclusion:**
+                                Based on the observed inconsistencies in image cohesion, facial features, background elements, and lighting, this image *appears* to be "Potentially Fake".
+                                Confidence: ${simulatedConfidence}% Fake
+                            `;
                         } else {
-                            // Handle cases where the response structure is unexpected or content is missing
-                            llmInsightsContent.textContent = "Could not generate insights. The AI response was empty or malformed.";
-                            llmInsightsContainer.style.display = 'block';
-                            resultExplanation.textContent = "An error occurred during AI analysis. Please try again.";
-                            console.error("Unexpected Gemini API response structure:", result);
-                            displayMessageBox('AI Response Error', 'The AI returned an unexpected or empty response. Please try again with a different image.');
+                            simulatedResult = 'Real';
+                            simulatedConfidence = Math.floor(Math.random() * 20) + 75; // 75-94% real
+                            simulatedExplanation = `
+                                **1. Overall Image Cohesion:**
+                                - The image appears natural and consistent throughout, with uniform resolution and sharpness.
+
+                                **2. Face Analysis:**
+                                - Facial features are well-defined and natural in their proportions. Skin texture is realistic, showing appropriate detail without excessive smoothness or graininess.
+                                - Lighting on the face is consistent with the overall scene, and there are no unusual blurs or pixelations.
+                                - Eyes show natural reflections and a realistic gaze.
+
+                                **3. Background Analysis:**
+                                - The background seamlessly integrates with the foreground subject(s). There are no noticeable distortions, repetitions, or inconsistencies in background elements.
+                                - Depth of field and focus are consistent, creating a natural sense of depth.
+
+                                **4. Lighting and Shadows Consistency:**
+                                - Lighting conditions are consistent across the entire image, with a clear and uniform light source.
+                                - Shadows are realistic, accurately reflecting the light source and object positions.
+
+                                **5. Digital Artifacts and Anomalies:**
+                                - No significant digital artifacts, noise patterns, or strange edges are detectable. The image exhibits clean pixel composition.
+
+                                **Conclusion:**
+                                Based on the comprehensive analysis of image cohesion, natural facial features, consistent background, and realistic lighting, this image *appears* to be "Real".
+                                Confidence: ${simulatedConfidence}% Real
+                            `;
                         }
+
+                        fullAnalysisReport = simulatedExplanation; // Store the simulated report
+
+                        // Update UI with simulated prediction result
+                        resultBox.textContent = `Verdict: ${simulatedResult}`;
+                        resultBox.classList.remove('real', 'fake');
+                        if (simulatedResult.toLowerCase().includes('fake')) {
+                            resultBox.classList.add('fake');
+                            confidenceLevel.style.backgroundColor = 'var(--accent-danger)';
+                        } else {
+                            resultBox.classList.add('real');
+                            confidenceLevel.style.backgroundColor = 'var(--accent-tertiary)';
+                        }
+
+                        setTimeout(() => {
+                            confidenceLevel.style.width = `${simulatedConfidence}%`;
+                        }, 100);
+                        confidenceValue.textContent = `Confidence: ${simulatedConfidence}%`;
+
+                        llmInsightsContent.innerHTML = simulatedExplanation.replace(/\n/g, '<br>');
+                        llmInsightsContainer.style.display = 'block';
+                        resultExplanation.textContent = "See the detailed AI analysis above.";
+                        downloadReportBtn.style.display = 'block';
+
                     } catch (error) {
-                        console.error('Error during Gemini API call:', error);
+                        console.error('Error during simulated analysis:', error);
                         resultBox.textContent = 'Analysis Failed';
                         resultBox.classList.remove('real', 'fake');
                         resultBox.classList.add('fake');
                         confidenceLevel.style.width = '0%';
                         confidenceValue.textContent = 'Confidence: --%';
-                        resultExplanation.textContent = `An error occurred during AI analysis: ${error.message}. This might be a network issue or a problem with the AI service. Please try again.`;
-                        llmInsightsContainer.style.display = 'none'; // Hide insights on error
-                        displayMessageBox('Analysis Error', `Failed to perform analysis: ${error.message}. Please check your internet connection and try again.`);
+                        resultExplanation.textContent = `An unexpected error occurred during simulated analysis: ${error.message}. Please try again.`;
+                        llmInsightsContainer.style.display = 'none';
+                        displayMessageBox('Analysis Error', `Failed to perform simulated analysis: ${error.message}.`);
                     } finally {
                         analyzeBtn.disabled = false;
                         loadingIndicator.style.display = 'none';
-                        console.log('Analysis process finished.');
+                        console.log('Simulated analysis process finished.');
                     }
                 });
 
@@ -1460,7 +1409,7 @@
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
-                        URL.revokeObjectURL(url); // Clean up the URL object
+                        URL.revokeObjectURL(url);
                     } else {
                         displayMessageBox('No Report', 'No analysis report available to download. Please perform an analysis first.');
                     }
