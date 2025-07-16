@@ -1309,7 +1309,7 @@
                         **2. Face Analysis (if faces are present):**
                         - Are facial features (eyes, nose, mouth, ears) natural in their appearance and proportion?
                         - Is the skin texture consistent, or are there areas that appear too smooth, too grainy, or unnaturally blurred/sharp?
-                        - Are there any odd blurs, pixelations, or unnatural lighting on the faces?
+                        - Are there any odd blurs, pixelations, or unnatural lighting on faces?
                         - Do the eyes appear natural (e.g., consistent reflections, natural gaze, realistic blinks if applicable)?
                         - Is the head pose and facial expression consistent with the body and overall scene?
 
@@ -1358,12 +1358,22 @@
                             body: JSON.stringify(payload)
                         });
 
-                        const result = await response.json();
-                        console.log('Gemini API response received:', result);
+                        // Check if the response itself indicates an error (e.g., 4xx or 5xx status)
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            console.error('API Error Response:', errorData);
+                            throw new Error(`API call failed with status ${response.status}: ${errorData.error.message || 'Unknown error'}`);
+                        }
 
+                        const result = await response.json();
+                        console.log('Gemini API raw response received:', result);
+
+                        // Robustly check for the expected structure
                         if (result.candidates && result.candidates.length > 0 &&
                             result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
+                            result.candidates[0].content.parts.length > 0 &&
+                            result.candidates[0].content.parts[0].text) {
+
                             const aiResponseText = result.candidates[0].content.parts[0].text;
                             fullAnalysisReport = aiResponseText; // Store the full report
 
@@ -1380,10 +1390,10 @@
                             if (confidenceMatch && confidenceMatch[1]) {
                                 simulatedConfidence = parseInt(confidenceMatch[1]);
                             } else {
-                                // If confidence not explicitly found, derive from verdict
-                                if (simulatedResult === 'Real') {
+                                // If confidence not explicitly found, derive a random one based on verdict
+                                if (simulatedResult.toLowerCase().includes('real')) {
                                     simulatedConfidence = Math.floor(Math.random() * 20) + 80; // 80-99% real
-                                } else if (simulatedResult === 'Potentially Fake') {
+                                } else if (simulatedResult.toLowerCase().includes('fake')) {
                                     simulatedConfidence = Math.floor(Math.random() * 20) + 80; // 80-99% fake
                                 } else {
                                     simulatedConfidence = Math.floor(Math.random() * 30) + 60; // 60-89% uncertain
@@ -1415,20 +1425,23 @@
                             downloadReportBtn.style.display = 'block'; // Show download button
 
                         } else {
-                            llmInsightsContent.textContent = "Could not generate insights. Unexpected response from AI.";
+                            // Handle cases where the response structure is unexpected or content is missing
+                            llmInsightsContent.textContent = "Could not generate insights. The AI response was empty or malformed.";
                             llmInsightsContainer.style.display = 'block';
                             resultExplanation.textContent = "An error occurred during AI analysis. Please try again.";
                             console.error("Unexpected Gemini API response structure:", result);
+                            displayMessageBox('AI Response Error', 'The AI returned an unexpected or empty response. Please try again with a different image.');
                         }
                     } catch (error) {
-                        console.error('Error calling Gemini API:', error);
+                        console.error('Error during Gemini API call:', error);
                         resultBox.textContent = 'Analysis Failed';
                         resultBox.classList.remove('real', 'fake');
                         resultBox.classList.add('fake');
                         confidenceLevel.style.width = '0%';
                         confidenceValue.textContent = 'Confidence: --%';
-                        resultExplanation.textContent = `An error occurred during AI analysis: ${error.message}. Please try a different image or check console for details.`;
+                        resultExplanation.textContent = `An error occurred during AI analysis: ${error.message}. This might be a network issue or a problem with the AI service. Please try again.`;
                         llmInsightsContainer.style.display = 'none'; // Hide insights on error
+                        displayMessageBox('Analysis Error', `Failed to perform analysis: ${error.message}. Please check your internet connection and try again.`);
                     } finally {
                         analyzeBtn.disabled = false;
                         loadingIndicator.style.display = 'none';
